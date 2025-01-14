@@ -1,10 +1,7 @@
-// src/app/api/vehicles/[id]/trips/route.ts
 import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
 
   // Validate the ID
