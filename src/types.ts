@@ -6,6 +6,6 @@ export interface Vehicle {
   lastUpdate: string;
   lat: number;
   lng: number;
-  isEditing:boolean;
+ 
   // Add any other properties as needed
 }

@@ -5,10 +5,11 @@ import dynamic from 'next/dynamic';
 import LeftMenu from '../components/LeftMenu';
 import RightMenu from '../components/RightMenu';
 import VehicleDetails from '../components/VehicleDetails';
+import { Vehicle } from '../types'; // Import the shared Vehicle interface
 
 const Map = dynamic(() => import('../components/Map'), { ssr: false });
 
-const mockVehicles = [
+const mockVehicles: Vehicle[] = [
   {
     id: 1,
     name: 'Car 1',
@@ -44,8 +45,8 @@ const mockVehicles = [
 ];
 
 export default function Dashboard() {
-  const [vehicles] = useState(mockVehicles); // Removed unused `setVehicles`
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [vehicles] = useState<Vehicle[]>(mockVehicles); // Explicitly type `vehicles`
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null); // Explicitly type `selectedVehicle`
 
   return (
     <div className="flex h-screen bg-black text-white">
@@ -56,7 +57,10 @@ export default function Dashboard() {
       {selectedVehicle ? (
         <VehicleDetails vehicle={selectedVehicle} />
       ) : (
-        <RightMenu vehicles={vehicles} onVehicleSelect={setSelectedVehicle} />
+        <RightMenu
+          vehicles={vehicles}
+          onVehicleSelect={(vehicle) => setSelectedVehicle(vehicle)} // Ensure the function matches the expected signature
+        />
       )}
     </div>
   );

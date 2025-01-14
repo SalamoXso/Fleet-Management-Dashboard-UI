@@ -9,6 +9,7 @@ import { Vehicle } from '../types'; // Import the correct Vehicle type
 // Define the props for the ShareLiveLocation component
 interface ShareLiveLocationProps {
   vehicle: Vehicle;
+  isEditing?: boolean;
 }
 
 export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {

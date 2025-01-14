@@ -37,9 +37,9 @@ export default function LeftMenu({ selectedVehicle }: LeftMenuProps) {
       case 'View Geofences':
         return <Geofence vehicle={selectedVehicle} />;
       case 'Set Geofence':
-        return <Geofence vehicle={selectedVehicle}  />; // ✅ Correct usage of isEditing
-      case 'Share Live Location':
-        return <ShareLiveLocation vehicle={selectedVehicle} />; // ❌ No isEditing here
+        return <Geofence vehicle={selectedVehicle} isEditing={true} />; // ✅ Correct usage of isEditing
+        case 'Share Live Location':
+          return <ShareLiveLocation vehicle={selectedVehicle} isEditing={false} />;
       case 'Settings':
         return <VehicleSettings vehicle={selectedVehicle} />;
       case 'Notification Settings':
