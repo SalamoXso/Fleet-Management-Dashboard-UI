@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+'use client'; // Ensure this is a Client Component
 
+import { useState, useEffect } from 'react';
 import { Vehicle } from '../types'; // Import the correct Vehicle type
+
 interface Notifications {
   geofenceAlerts: boolean;
   speedAlerts: boolean;
@@ -11,39 +13,27 @@ interface NotificationSettingsProps {
   vehicle: Vehicle;
 }
 
+// Mock data for notifications
+const mockNotifications: Notifications = {
+  geofenceAlerts: true,
+  speedAlerts: false,
+  maintenanceReminders: true,
+};
+
 export default function NotificationSettings({ vehicle }: NotificationSettingsProps) {
-  const [notifications, setNotifications] = useState<Notifications>({
-    geofenceAlerts: true,
-    speedAlerts: false,
-    maintenanceReminders: true,
-  });
+  const [notifications, setNotifications] = useState<Notifications>(mockNotifications);
 
-  // Fetch saved preferences when the component mounts
+  // Use mock data instead of fetching from the API
   useEffect(() => {
-    const fetchPreferences = async () => {
-      try {
-        const response = await fetch(`/api/vehicles/${vehicle.id}/notifications`);
-        const data = await response.json();
-        setNotifications(data);
-      } catch (error) {
-        console.error('Error fetching preferences:', error);
-      }
-    };
+    setNotifications(mockNotifications);
+  }, []); // Empty dependency array means this runs once on mount
 
-    fetchPreferences();
-  }, [vehicle]);
-
-  // Save preferences to the backend
+  // Save preferences to the backend (mocked for now)
   const savePreferences = async () => {
     try {
-      const response = await fetch(`/api/vehicles/${vehicle.id}/notifications`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(notifications),
-      });
-      if (response.ok) {
-        alert('Preferences saved successfully!');
-      }
+      // Simulate an API call with a delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      alert('Preferences saved successfully!');
     } catch (error) {
       console.error('Error saving preferences:', error);
     }

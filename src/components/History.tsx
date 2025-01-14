@@ -15,26 +15,44 @@ interface Trip {
 
 // Define the props for the History component
 interface HistoryProps {
-  vehicle: Vehicle;
+  vehicle: Vehicle; // This will be used in the future
 }
+
+// Mock data for trips
+const mockTrips: Trip[] = [
+  {
+    id: '1',
+    name: 'Trip to Office',
+    startTime: '2023-10-01T08:00:00Z',
+    endTime: '2023-10-01T09:00:00Z',
+    route: [
+      { lat: 37.7749, lng: -122.4194 }, // San Francisco
+      { lat: 37.3382, lng: -121.8863 }, // San Jose
+    ],
+  },
+  {
+    id: '2',
+    name: 'Trip to Client',
+    startTime: '2023-10-02T10:00:00Z',
+    endTime: '2023-10-02T11:30:00Z',
+    route: [
+      { lat: 37.7749, lng: -122.4194 }, // San Francisco
+      { lat: 34.0522, lng: -118.2437 }, // Los Angeles
+    ],
+  },
+];
 
 export default function History({ vehicle }: HistoryProps) {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
   useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        const response = await fetch(`/api/vehicles/${vehicle.id}/trips`);
-        const data = await response.json();
-        setTrips(data);
-      } catch (error) {
-        console.error('Error fetching trips:', error);
-      }
-    };
+    // Use mock data instead of fetching from the API
+    setTrips(mockTrips);
 
-    fetchTrips();
-  }, [vehicle]);
+    // TODO: Replace mock data with API call using the `vehicle` prop
+    // Example: fetch(`/api/vehicles/${vehicle.id}/trips`)
+  }, [vehicle]); // Add `vehicle` to the dependency array when using it
 
   return (
     <div className="p-4">
