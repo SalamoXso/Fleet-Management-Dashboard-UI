@@ -1,67 +1,77 @@
-'use client'; // Ensure this is a Client Component
+'use client';
 
-import { useState, useEffect } from 'react';
-import { GoogleMap, Polygon, useJsApiLoader } from '@react-google-maps/api';
+import { useState } from 'react';
+import { Copy, Check, Share2 } from 'lucide-react';
+import { Vehicle } from '../types'; // Import the correct Vehicle type
 
-export default function Geofence({ vehicle, isEditing = false }) {
-  const [geofences, setGeofences] = useState([]);
-  const [newGeofence, setNewGeofence] = useState(null);
 
-  useEffect(() => {
-    const fetchGeofences = async () => {
+
+// Define the props for the ShareLiveLocation component
+interface ShareLiveLocationProps {
+  vehicle: Vehicle;
+}
+
+export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
+  const [isCopied, setIsCopied] = useState(false);
+  const [shareLink, setShareLink] = useState('');
+
+  const generateShareLink = () => {
+    const baseUrl = window.location.origin;
+    const link = `${baseUrl}/share-live-location/${vehicle.id}`;
+    setShareLink(link);
+    setIsCopied(false);
+  };
+
+  const copyToClipboard = async () => {
+    if (shareLink) {
       try {
-        const response = await fetch(`/api/vehicles/${vehicle.id}/geofences`);
-        const data = await response.json();
-        setGeofences(data);
+        await navigator.clipboard.writeText(shareLink);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
-        console.error('Error fetching geofences:', error);
+        console.error('Failed to copy link:', error);
       }
-    };
-
-    fetchGeofences();
-  }, [vehicle]);
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-  });
-
-  if (!isLoaded) {
-    return <div>Loading map...</div>;
-  }
+    }
+  };
 
   return (
-    <div className="p-4">
-      <h3 className="text-xl font-bold mb-4">
-        {isEditing ? 'Set Geofence' : 'View Geofences'} for {vehicle.name}
-      </h3>
-      {isEditing && (
-        <button
-          className="mb-4 p-2 bg-orange-500 rounded"
-          onClick={() => setNewGeofence(true)}
-        >
-          Create New Geofence
-        </button>
-      )}
-      <GoogleMap
-        mapContainerStyle={{ width: '100%', height: '400px' }}
-        center={{ lat: 40.7128, lng: -74.0060 }}
-        zoom={10}
+    <div className="mt-4">
+      <h3 className="text-lg font-bold mb-2">Share Live Location for {vehicle.name}</h3>
+      <p className="text-gray-300 mb-4">
+        Generate a shareable link to track this vehicle&apos;s live location.
+      </p>
+
+      <button
+        onClick={generateShareLink}
+        className="flex items-center bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
       >
-        {geofences.map((geofence) => (
-          <Polygon
-            key={geofence.id}
-            paths={geofence.coordinates}
-            options={{
-              strokeColor: '#FF0000',
-              strokeOpacity: 0.8,
-              strokeWeight: 2,
-              fillColor: '#FF0000',
-              fillOpacity: 0.35,
-            }}
-          />
-        ))}
-      </GoogleMap>
+        <Share2 className="mr-2" size={18} />
+        Generate Shareable Link
+      </button>
+
+      {shareLink && (
+        <div className="mt-4">
+          <p className="text-gray-300 mb-2">Shareable Link:</p>
+          <div className="flex items-center bg-gray-800 p-2 rounded-md">
+            <input
+              type="text"
+              value={shareLink}
+              readOnly
+              className="flex-grow bg-transparent text-white outline-none"
+            />
+            <button
+              onClick={copyToClipboard}
+              className="ml-2 p-2 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors"
+            >
+              {isCopied ? (
+                <Check className="text-green-500" size={18} />
+              ) : (
+                <Copy className="text-gray-300" size={18} />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

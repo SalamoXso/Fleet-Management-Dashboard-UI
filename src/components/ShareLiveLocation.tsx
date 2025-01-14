@@ -3,7 +3,16 @@
 import { useState } from 'react';
 import { Copy, Check, Share2 } from 'lucide-react';
 
-export default function ShareLiveLocation({ vehicle }) {
+import { Vehicle } from '../types'; // Import the correct Vehicle type
+
+// Define the props for the ShareLiveLocation component
+interface ShareLiveLocationProps {
+  vehicle: Vehicle;
+  isEditing?: boolean; // Make it optional if not always required
+
+}
+
+export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
   const [isCopied, setIsCopied] = useState(false); // Track if the link is copied
   const [shareLink, setShareLink] = useState(''); // Store the generated shareable link
 
@@ -32,7 +41,7 @@ export default function ShareLiveLocation({ vehicle }) {
     <div className="mt-4">
       <h3 className="text-lg font-bold mb-2">Share Live Location for {vehicle.name}</h3>
       <p className="text-gray-300 mb-4">
-        Generate a shareable link to track this vehicle's live location.
+        Generate a shareable link to track this vehicles live location.
       </p>
 
       {/* Generate Link Button */}

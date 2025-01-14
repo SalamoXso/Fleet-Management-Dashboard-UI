@@ -1,6 +1,12 @@
 import { ArrowUp, Wifi, Battery, Thermometer, Compass, MapPin, Clock } from 'lucide-react';
 
-export default function VehicleDetails({ vehicle }) {
+import { Vehicle } from '../types'; // Import the correct Vehicle type
+
+interface VehicleDetailsProps {
+  vehicle: Vehicle;
+}
+
+export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
   // Mock data for vehicle stats
   const stats = {
     gps: { lat: 40.7128, lng: -74.0060 },

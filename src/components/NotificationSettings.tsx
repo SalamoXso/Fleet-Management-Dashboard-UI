@@ -1,17 +1,55 @@
-'use client'; // Ensure this is a Client Component
+import { useState, useEffect } from 'react';
 
-import { useState } from 'react';
+import { Vehicle } from '../types'; // Import the correct Vehicle type
+interface Notifications {
+  geofenceAlerts: boolean;
+  speedAlerts: boolean;
+  maintenanceReminders: boolean;
+}
 
-export default function NotificationSettings({ vehicle }) {
-  // State to manage notification preferences
-  const [notifications, setNotifications] = useState({
+interface NotificationSettingsProps {
+  vehicle: Vehicle;
+}
+
+export default function NotificationSettings({ vehicle }: NotificationSettingsProps) {
+  const [notifications, setNotifications] = useState<Notifications>({
     geofenceAlerts: true,
     speedAlerts: false,
     maintenanceReminders: true,
   });
 
-  // Handle toggle changes
-  const handleToggle = (key) => {
+  // Fetch saved preferences when the component mounts
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const response = await fetch(`/api/vehicles/${vehicle.id}/notifications`);
+        const data = await response.json();
+        setNotifications(data);
+      } catch (error) {
+        console.error('Error fetching preferences:', error);
+      }
+    };
+
+    fetchPreferences();
+  }, [vehicle]);
+
+  // Save preferences to the backend
+  const savePreferences = async () => {
+    try {
+      const response = await fetch(`/api/vehicles/${vehicle.id}/notifications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notifications),
+      });
+      if (response.ok) {
+        alert('Preferences saved successfully!');
+      }
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+    }
+  };
+
+  const handleToggle = (key: keyof Notifications) => {
     setNotifications((prev) => ({
       ...prev,
       [key]: !prev[key],
@@ -87,6 +125,14 @@ export default function NotificationSettings({ vehicle }) {
             />
           </button>
         </div>
+
+        {/* Save Button */}
+        <button
+          onClick={savePreferences}
+          className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
+        >
+          Save Preferences
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-'use client'; // Add this directive
+'use client';
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -44,7 +44,7 @@ const mockVehicles = [
 ];
 
 export default function Dashboard() {
-  const [vehicles, setVehicles] = useState(mockVehicles);
+  const [vehicles] = useState(mockVehicles); // Removed unused `setVehicles`
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   return (

@@ -2,10 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { Polyline } from '@react-google-maps/api';
+import { Vehicle } from '../types'; // Import the correct Vehicle type
 
-export default function History({ vehicle }) {
-  const [trips, setTrips] = useState([]);
-  const [selectedTrip, setSelectedTrip] = useState(null);
+// Define the Trip interface
+interface Trip {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  route: google.maps.LatLngLiteral[]; // Assuming route is an array of LatLngLiteral objects
+}
+
+// Define the props for the History component
+interface HistoryProps {
+  vehicle: Vehicle;
+}
+
+export default function History({ vehicle }: HistoryProps) {
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
 
   useEffect(() => {
     const fetchTrips = async () => {

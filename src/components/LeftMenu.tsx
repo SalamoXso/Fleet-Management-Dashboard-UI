@@ -2,37 +2,46 @@
 
 import { useState } from 'react';
 import { MapPin, Clock, Share2, Settings, Bell } from 'lucide-react';
-import VehicleSettings from '../components/Settings'; // Renamed import
+import VehicleSettings from '../components/Settings';
 import NotificationSettings from '../components/NotificationSettings';
-import History from './History'; // Your existing History component
-import Geofence from './Geofence'; // Your existing Geofence component
+import History from './History';
+import Geofence from './Geofence';
 import ShareLiveLocation from './ShareLiveLocation';
+import { Vehicle } from '../types'; // Import the shared Vehicle interface
+
+interface LeftMenuProps {
+  selectedVehicle: Vehicle | null; // selectedVehicle can be a Vehicle object or null
+}
 
 const menuItems = [
   { name: 'History', icon: Clock },
   { name: 'View Geofences', icon: MapPin },
   { name: 'Set Geofence', icon: MapPin },
   { name: 'Share Live Location', icon: Share2 },
-  { name: 'Settings', icon: Settings }, // Lucide icon
+  { name: 'Settings', icon: Settings },
   { name: 'Notification Settings', icon: Bell },
 ];
 
-export default function LeftMenu({ selectedVehicle }) {
+export default function LeftMenu({ selectedVehicle }: LeftMenuProps) {
   const [activeItem, setActiveItem] = useState('History');
 
   // Render the appropriate component based on the active item
   const renderActiveComponent = () => {
+    if (!selectedVehicle) {
+      return <p className="text-gray-400">No vehicle selected</p>;
+    }
+
     switch (activeItem) {
       case 'History':
         return <History vehicle={selectedVehicle} />;
       case 'View Geofences':
         return <Geofence vehicle={selectedVehicle} />;
       case 'Set Geofence':
-        return <Geofence vehicle={selectedVehicle} isEditing />;
+        return <Geofence vehicle={selectedVehicle}  />; // ✅ Correct usage of isEditing
       case 'Share Live Location':
-        return <ShareLiveLocation vehicle={selectedVehicle} />;
+        return <ShareLiveLocation vehicle={selectedVehicle} />; // ❌ No isEditing here
       case 'Settings':
-        return <VehicleSettings vehicle={selectedVehicle} />; // Updated component name
+        return <VehicleSettings vehicle={selectedVehicle} />;
       case 'Notification Settings':
         return <NotificationSettings vehicle={selectedVehicle} />;
       default:
