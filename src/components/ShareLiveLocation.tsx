@@ -1,36 +1,48 @@
-'use client'; // Ensure this is a Client Component
+'use client';
 
 import { useState } from 'react';
 import { Copy, Check, Share2 } from 'lucide-react';
+import { Vehicle, Geofence } from '../types'; // Import the correct types
+import GeofenceActions from './GeofenceActions'; // Import the GeofenceActions component
 
-import { Vehicle } from '../types'; // Import the correct Vehicle type
-
-// Define the props for the ShareLiveLocation component
 interface ShareLiveLocationProps {
   vehicle: Vehicle;
-  isEditing?: boolean; // Make it optional if not always required
-
+  isEditing?: boolean;
 }
 
 export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
-  const [isCopied, setIsCopied] = useState(false); // Track if the link is copied
-  const [shareLink, setShareLink] = useState(''); // Store the generated shareable link
+  const [isCopied, setIsCopied] = useState(false);
+  const [shareLink, setShareLink] = useState('');
+  const [geofences, setGeofences] = useState<Geofence[]>([]); // State for geofences
 
-  // Generate a shareable link for the vehicle's live location
-  const generateShareLink = () => {
-    const baseUrl = window.location.origin; // Get the current domain
-    const link = `${baseUrl}/share-live-location/${vehicle.id}`; // Create a unique link
-    setShareLink(link);
-    setIsCopied(false); // Reset the copied state
+  // Handle adding a new geofence
+  const handleAddGeofence = (geofence: Geofence) => {
+    setGeofences([...geofences, geofence]);
   };
 
-  // Copy the shareable link to the clipboard
+  // Handle editing a geofence
+  const handleEditGeofence = (id: string, updatedGeofence: Geofence) => {
+    setGeofences(geofences.map((g) => (g.id === id ? updatedGeofence : g)));
+  };
+
+  // Handle deleting a geofence
+  const handleDeleteGeofence = (id: string) => {
+    setGeofences(geofences.filter((g) => g.id !== id));
+  };
+
+  const generateShareLink = () => {
+    const baseUrl = window.location.origin;
+    const link = `${baseUrl}/share-live-location/${vehicle.id}`;
+    setShareLink(link);
+    setIsCopied(false);
+  };
+
   const copyToClipboard = async () => {
     if (shareLink) {
       try {
         await navigator.clipboard.writeText(shareLink);
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
         console.error('Failed to copy link:', error);
       }
@@ -41,10 +53,9 @@ export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
     <div className="mt-4">
       <h3 className="text-lg font-bold mb-2">Share Live Location for {vehicle.name}</h3>
       <p className="text-gray-300 mb-4">
-        Generate a shareable link to track this vehicles live location.
+        Generate a shareable link to track this vehicle&apos;s live location.
       </p>
 
-      {/* Generate Link Button */}
       <button
         onClick={generateShareLink}
         className="flex items-center bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
@@ -53,7 +64,6 @@ export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
         Generate Shareable Link
       </button>
 
-      {/* Display the Shareable Link */}
       {shareLink && (
         <div className="mt-4">
           <p className="text-gray-300 mb-2">Shareable Link:</p>
@@ -77,6 +87,14 @@ export default function ShareLiveLocation({ vehicle }: ShareLiveLocationProps) {
           </div>
         </div>
       )}
+
+      {/* Geofence Actions */}
+      <GeofenceActions
+        geofences={geofences}
+        onAdd={handleAddGeofence}
+        onEdit={handleEditGeofence}
+        onDelete={handleDeleteGeofence}
+      />
     </div>
   );
 }
