@@ -55,11 +55,14 @@ export default function Dashboard() {
         <Map vehicles={vehicles} />
       </main>
       {selectedVehicle ? (
-        <VehicleDetails vehicle={selectedVehicle} />
+        <VehicleDetails
+          vehicle={selectedVehicle}
+          onBack={() => setSelectedVehicle(null)} // Pass the onBack function
+        />
       ) : (
         <RightMenu
           vehicles={vehicles}
-          onVehicleSelect={(vehicle) => setSelectedVehicle(vehicle)} // Ensure the function matches the expected signature
+          onVehicleSelect={(vehicle) => setSelectedVehicle(vehicle)}
         />
       )}
     </div>

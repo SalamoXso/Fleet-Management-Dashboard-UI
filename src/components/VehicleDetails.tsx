@@ -1,12 +1,12 @@
-import { ArrowUp, Wifi, Battery, Thermometer, Compass, MapPin, Clock } from 'lucide-react';
-
+import { ArrowLeft, ArrowUp, Wifi, Battery, Thermometer, Compass, MapPin, Clock } from 'lucide-react';
 import { Vehicle } from '../types'; // Import the correct Vehicle type
 
 interface VehicleDetailsProps {
   vehicle: Vehicle;
+  onBack: () => void; // Add the onBack prop
 }
 
-export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
+export default function VehicleDetails({ vehicle, onBack }: VehicleDetailsProps) {
   // Mock data for vehicle stats
   const stats = {
     gps: { lat: 40.7128, lng: -74.0060 },
@@ -23,6 +23,15 @@ export default function VehicleDetails({ vehicle }: VehicleDetailsProps) {
 
   return (
     <div className="w-64 bg-gray-900 p-4 overflow-y-auto">
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        className="flex items-center text-gray-300 hover:text-white mb-4"
+      >
+        <ArrowLeft className="mr-2" size={18} />
+        Back
+      </button>
+
       <h2 className="text-2xl font-bold mb-4 text-orange-500">{vehicle.name}</h2>
       <ul className="space-y-2">
         <li className="flex items-center">
